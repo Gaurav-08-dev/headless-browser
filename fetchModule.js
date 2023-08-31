@@ -22,30 +22,50 @@ async function fetchFromURL(customUrl) {
         DOM,
         Page,
         Emulation,
-        Runtime
+        Runtime,
+        Network
     } = protocol;
 
 
-    await Promise.all([Page.enable(), Runtime.enable(), DOM.enable()]);
+    await Promise.all([Network.enable(),Page.enable(), Runtime.enable(), DOM.enable()]);
 
+    const apiCalls = [];
     Page.navigate({
         url: customUrl ? customUrl : ' https://developer.chrome.com/blog/headless-chrome/'
     });
+    Network.requestWillBeSent(params => {
+        apiCalls.push(params.request.url);
+    });
+
+
 
     const resultPromise = new Promise(resolve => {
-        setTimeout(() => Page.loadEventFired(async () => {
-            const script1 = "document.querySelector('*').innerHTML"
+        Page.loadEventFired(async () => {
 
+            const script1 = "document.querySelector('*').innerHTML";
+            const script2="JSON.stringify(window.pbjs)"
+            // "document.querySelector('*').innerHTML"
+            // "JSON.stringify(window.pbjs)"
             const result = await Runtime.evaluate({
                 expression: script1
             });
 
+            const adData = await Runtime.evaluate({
+                expression: script2
+            });
+
+
+            // await Page.addScriptToEvaluateOnNewDocument({ source: `fetch('http://localhost:4000/prebid.js').then(response => console.log("---->", response.text())).then(eval);` })
+            // await Page.waitForSelector('.ad-banner', { timeout: 5000 });
+
+            // console.log("window object", result.result)
             protocol.close();
             chrome.kill();
-            resolve(result.result.value)
+            // resolve(result.result.value)
+            resolve({apiCalls:apiCalls, ad:JSON.parse(adData.result.value), web:result.result.value})
 
         }
-        ), 2000)
+        )
     })
 
     return resultPromise

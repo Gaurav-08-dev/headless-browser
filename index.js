@@ -8,7 +8,9 @@ app.get('/', async (req, res) => {
     try {
         const result = await fetchFromURL('https://mathup.com/games/crossbit');
         console.log(result)
-        res.send(result);
+        // console.log(JSON.parse(result))
+        // res.send(JSON.parse(result));
+        res.send(result)
     } catch (error) {
         console.log(error)
     }
@@ -16,5 +18,5 @@ app.get('/', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+    console.log(`Server is running on port ${port}`);
 });
