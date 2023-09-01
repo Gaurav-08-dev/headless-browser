@@ -34,7 +34,7 @@ async function fetchFromURL(customUrl) {
         url: customUrl ? customUrl : ' https://developer.chrome.com/blog/headless-chrome/'
     });
     Network.requestWillBeSent(params => {
-        apiCalls.push(params.request.url);
+        apiCalls.push({url:params.request.url, payload:params.request.postData});
     });
 
 
@@ -62,7 +62,8 @@ async function fetchFromURL(customUrl) {
             protocol.close();
             chrome.kill();
             // resolve(result.result.value)
-            resolve({apiCalls:apiCalls, ad:JSON.parse(adData.result.value), web:result.result.value})
+            console.log({apiCalls:apiCalls, ad:adData.result.value, web:result.result.value})
+            resolve({apiCalls:apiCalls, ad:adData.result.value, web:result.result.value})
 
         }
         )

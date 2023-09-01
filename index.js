@@ -15,6 +15,11 @@ const port = 4000; // You can change this to any port you prefer
 //         console.log(error)
 //     }
 // });
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 app.get('/fetch-url/:scrapUrl', async(req, res) => {
     const urlData = req.params.scrapUrl;
     // Process the userId and send a response
