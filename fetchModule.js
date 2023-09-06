@@ -62,7 +62,7 @@ async function fetchFromURL(customUrl) {
             protocol.close();
             chrome.kill();
             // resolve(result.result.value)
-            console.log({apiCalls:apiCalls, ad:adData.result.value, web:result.result.value})
+            // console.log({apiCalls:apiCalls, ad:adData.result.value, web:result.result.value})
             resolve({apiCalls:apiCalls, ad:adData.result.value, web:result.result.value})
 
         }
